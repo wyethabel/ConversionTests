@@ -34,4 +34,5 @@ jobs:
           arch: x86_64
           force-avd-creation: true
           emulator-options: -no-window -gpu swiftshader_indirect
+          wait-for-boot: true
           script: ./gradlew connectedDebugAndroidTest
