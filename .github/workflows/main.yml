@@ -33,13 +33,14 @@ jobs:
           target: default
           arch: x86_64
           force-avd-creation: true
-          emulator-options: -no-window -gpu swiftshader_indirect
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-save
           script: |
             echo "Waiting for emulator to boot..."
             adb wait-for-device
             boot_completed=""
-            until [[ "$boot_completed" == "1" ]]; do
+            while [ "$boot_completed" != "1" ]; do
               boot_completed=$(adb shell getprop sys.boot_completed | tr -d '\r')
+              echo "Boot status: $boot_completed"
               sleep 5
             done
             echo "Emulator booted!"
