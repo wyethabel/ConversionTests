@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,11 +23,15 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
 
-      - name: Build & Test
-        run: ./gradlew clean build
+      - name: Build & Run Unit Tests
+        run: ./gradlew clean build test
 
-      - name: Run Unit Tests
-        run: ./gradlew test
-
-      - name: Run Instrumentation Tests
-        run: ./gradlew connectedAndroidTest
+      - name: Run Instrumented Tests on Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: default
+          arch: x86_64
+          force-avd-creation: true
+          emulator-options: -no-window -gpu swiftshader_indirect
+          script: ./gradlew connectedDebugAndroidTest
