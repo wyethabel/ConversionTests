@@ -34,5 +34,13 @@ jobs:
           arch: x86_64
           force-avd-creation: true
           emulator-options: -no-window -gpu swiftshader_indirect
-          wait-for-boot: true
-          script: ./gradlew connectedDebugAndroidTest
+          script: |
+            echo "Waiting for emulator to boot..."
+            adb wait-for-device
+            boot_completed=""
+            until [[ "$boot_completed" == "1" ]]; do
+              boot_completed=$(adb shell getprop sys.boot_completed | tr -d '\r')
+              sleep 5
+            done
+            echo "Emulator booted!"
+            ./gradlew connectedDebugAndroidTest
